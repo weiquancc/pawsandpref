@@ -11,7 +11,7 @@ let startY = 0;
 let currentX = 0;
 let currentY = 0;
 let isDragging = false;
-let isAnimating = false; // Prevent multiple button clicks during animation
+let isAnimating = false;
 let currentCard = null;
 let currentOverlay = null;
 
@@ -63,12 +63,10 @@ async function loadCats() {
 
 // Render cards
 function renderCards() {
-    // Don't render if we're in the middle of a drag
     if (isDragging) return;
     
     cardStack.innerHTML = '';
     
-    // Show up to 3 cards at a time
     const cardsToShow = Math.min(3, cats.length - currentIndex);
     
     for (let i = 0; i < cardsToShow; i++) {
@@ -83,7 +81,6 @@ function renderCards() {
     // Set currentCard to the top card (first one)
     currentCard = cardStack.querySelector('.cat-card');
     
-    // Verify the overlay exists on the new currentCard and store reference
     if (currentCard) {
         currentOverlay = currentCard.querySelector('.cat-card-overlay');
         if (!currentOverlay && currentCard.children.length > 1) {
@@ -149,8 +146,7 @@ function handleTouchStart(e) {
     if (!topCard || isDragging) return;
     
     currentCard = topCard;
-    
-    // Get or create overlay and store reference
+
     currentOverlay = currentCard.querySelector('.cat-card-overlay');
     if (!currentOverlay && currentCard.children.length > 1) {
         // Check if second child is the overlay
@@ -186,15 +182,13 @@ function handleTouchEnd(e) {
     handleSwipeEnd();
 }
 
-// Mouse handlers
 function handleMouseDown(e) {
     // Get the current top card
     const topCard = cardStack.querySelector('.cat-card');
     if (!topCard || e.button !== 0 || isDragging) return;
     
     currentCard = topCard;
-    
-    // Get or create overlay and store reference
+
     currentOverlay = currentCard.querySelector('.cat-card-overlay');
     if (!currentOverlay && currentCard.children.length > 1) {
         // Check if second child is the overlay
@@ -301,7 +295,6 @@ function handleSwipeEnd() {
             handleSwipeDislike();
         }
     } else {
-        // Snap back - restore to initial position (scale 1, no translate)
         currentCard.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
         currentCard.style.transform = 'scale(1) translateY(0px)';
         currentCard.style.opacity = '';
@@ -328,7 +321,7 @@ function handleSwipeEnd() {
     currentOverlay = null;
 }
 
-// Handle swipe like (fast, no delay)
+// Handle swipe like 
 function handleSwipeLike() {
     if (currentIndex >= cats.length) return;
     
@@ -340,7 +333,7 @@ function handleSwipeLike() {
     moveToNext();
 }
 
-// Handle swipe dislike (fast, no delay)
+// Handle swipe dislike 
 function handleSwipeDislike() {
     if (currentIndex >= cats.length) return;
     
@@ -348,7 +341,7 @@ function handleSwipeDislike() {
     moveToNext();
 }
 
-// Handle like button click (with delay for visibility)
+// Handle like button click
 function handleLike() {
     // Prevent multiple clicks during animation
     if (isAnimating || currentIndex >= cats.length || isDragging) return;
@@ -387,7 +380,7 @@ function handleLike() {
     // Show LIKE overlay first - force display
     currentOverlay.className = 'cat-card-overlay like';
     currentOverlay.textContent = 'LIKE';
-    currentOverlay.style.display = 'flex'; // Ensure it's visible
+    currentOverlay.style.display = 'flex';
     
     const cat = cats[currentIndex];
     cat.liked = true;
@@ -432,7 +425,6 @@ function handleDislike() {
     currentCard = topCard;
     currentOverlay = currentCard.querySelector('.cat-card-overlay');
     
-    // If overlay not found, try to get it from children
     if (!currentOverlay && currentCard.children.length > 1) {
         const secondChild = currentCard.children[1];
         if (secondChild && secondChild.classList.contains('cat-card-overlay')) {
@@ -456,22 +448,17 @@ function handleDislike() {
     // Show PASS overlay first - force display
     currentOverlay.className = 'cat-card-overlay dislike';
     currentOverlay.textContent = 'PASS';
-    currentOverlay.style.display = 'flex'; // Ensure it's visible
+    currentOverlay.style.display = 'flex'; 
     
-    // Wait a bit so user can see the overlay, then animate
     setTimeout(() => {
-        // Verify card still exists before animating
         if (!currentCard || !currentCard.parentNode) {
             isAnimating = false;
             return;
         }
-        
-        // Animate card to the left with longer duration
         currentCard.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
         currentCard.style.transform = 'translateX(-150%) rotate(-30deg)';
         currentCard.style.opacity = '0';
         
-        // Wait for animation to complete, then remove card and move to next
         setTimeout(() => {
             if (currentCard && currentCard.parentNode) {
                 currentCard.remove();
