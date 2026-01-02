@@ -56,6 +56,7 @@ This project is open source and available for educational purposes.
 
 ## Credits
 
+- **Created by**: Cheng Wei Quan
 - Cat images provided by [Cataas API](https://cataas.com/)
 - Font: Poppins from Google Fonts
 
